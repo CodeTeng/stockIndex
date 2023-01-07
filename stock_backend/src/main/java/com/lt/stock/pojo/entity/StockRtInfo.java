@@ -3,10 +3,13 @@ package com.lt.stock.pojo.entity;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+
 import lombok.Data;
 
 /**
  * 个股详情信息表
+ *
+ * @author teng
  * @TableName stock_rt_info
  */
 @Data

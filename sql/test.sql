@@ -54,3 +54,38 @@ from stock_block_rt_info as sbri
 where sbri.cur_time = '2021-12-21 14:30:00'
 order by sbri.trade_volume desc
 limit 10;
+
+# 分析：统计国内A股股票的最新数据，根据涨幅排序取前10
+# 方式1：根据日期和涨幅降序排序取前10即可
+select sri.trade_amount                                            as tradeAmt,
+       sri.pre_close_price                                         as preClosePrice,
+       (sri.max_price - sri.min_price) / sri.pre_close_price       as amplitude,
+       sri.stock_code                                              as code,
+       sri.stock_name                                              as name,
+       date_format(sri.cur_time, '%Y%m%d')                         as curDate,
+       sri.trade_volume                                            as tradeVol,
+       (sri.cur_price - sri.pre_close_price)                       as increase,
+       (sri.cur_price - sri.pre_close_price) / sri.pre_close_price as upDown,
+       sri.cur_price                                               as tradePrice
+from stock_rt_info sri
+order by sri.cur_time desc, upDown desc
+limit 10;
+# 分析：方案1存在的问题：国内A股股票的最新数据等价于查询最近最新股票交易时间
+# 点下的数据，同时排序时是全表排序计算的，然后排序完毕后，在筛选出前10条记录
+# -----》大表全表排序，取前10---》先根据股票时间点过滤，过滤出的小结果集，然后再将这个结果集排序，取10
+# 方案2：【推荐】
+# 核心思想：先根据业务推出过滤条件，然后根据过滤条件得到小结果集，然后再将这个小的结果集进行排序运算取前10；
+select sri.trade_amount                                            as tradeAmt,
+       sri.pre_close_price                                         as preClosePrice,
+       (sri.max_price - sri.min_price) / sri.pre_close_price       as amplitude,
+       sri.stock_code                                              as code,
+       sri.stock_name                                              as name,
+       date_format(sri.cur_time, '%Y%m%d')                         as curDate,
+       sri.trade_volume                                            as tradeVol,
+       (sri.cur_price - sri.pre_close_price)                       as upDown,
+       (sri.cur_price - sri.pre_close_price) / sri.pre_close_price as increase,
+       sri.cur_price                                               as tradePrice
+from stock_rt_info as sri
+where sri.cur_time = '2021-12-27 09:47:00'
+order by upDown desc
+limit 10;

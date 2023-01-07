@@ -26,7 +26,7 @@
         <druid-core-version>1.2.8</druid-core-version>
         <sharding-jdbc.version>4.0.0-RC1</sharding-jdbc.version>
         <jjwt.version>0.9.1</jjwt.version>
-        <easyExcel.version>3.0.4</easyExcel.version>
+        <easyExcel.version>3.1.5</easyExcel.version>
         <xxl-job-core.version>2.3.0</xxl-job-core.version>
         <spring-boot.version>2.5.3</spring-boot.version>
         <joda-time.version>2.10.5</joda-time.version>
