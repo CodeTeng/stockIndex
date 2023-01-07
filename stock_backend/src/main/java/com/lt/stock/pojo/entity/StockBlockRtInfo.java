@@ -1,4 +1,4 @@
-package com.lt.stock.pojo;
+package com.lt.stock.pojo.entity;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -9,6 +9,7 @@ import lombok.Data;
 /**
  * 股票板块详情信息表
  *
+ * @author teng
  * @TableName stock_block_rt_info
  */
 @Data

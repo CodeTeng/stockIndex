@@ -11,14 +11,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
  * @date: 2023/1/6 19:06
  */
 @SpringBootTest
-public class TestAll {
+public class TestPwd {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Test
     public void testPwd() {
-        String pwd="1234";
+        String pwd = "1234";
         String encode = passwordEncoder.encode(pwd);
         // $2a$10$W864RVedOz/eRc7U2KQozOSK3m9fgnwaYnnC/Cj0QEaYq.qDgs/nO
         System.out.println(encode);

@@ -1,12 +1,12 @@
 package com.lt.stock.mapper;
 
-import com.lt.stock.pojo.SysRolePermission;
+import com.lt.stock.pojo.entity.SysRolePermission;
 
 /**
 * @author teng
 * @description 针对表【sys_role_permission(角色权限表)】的数据库操作Mapper
 * @createDate 2023-01-06 18:23:05
-* @Entity com.lt.stock.pojo.SysRolePermission
+* @Entity com.lt.stock.pojo.entity.SysRolePermission
 */
 public interface SysRolePermissionMapper {
 

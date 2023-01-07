@@ -1,13 +1,20 @@
 package com.lt.stock.mapper;
 
-import com.lt.stock.pojo.StockBlockRtInfo;
+import com.lt.stock.pojo.entity.StockBlockRtInfo;
+import com.lt.stock.pojo.vo.StockBlockResponseVo;
+import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
+
+import java.util.Date;
+import java.util.List;
 
 /**
-* @author teng
-* @description 针对表【stock_block_rt_info(股票板块详情信息表)】的数据库操作Mapper
-* @createDate 2023-01-06 18:23:05
-* @Entity com.lt.stock.pojo.StockBlockRtInfo
-*/
+ * @author teng
+ * @description 针对表【stock_block_rt_info(股票板块详情信息表)】的数据库操作Mapper
+ * @createDate 2023-01-06 18:23:05
+ * @Entity com.lt.stock.pojo.entity.StockBlockRtInfo
+ */
+@Repository
 public interface StockBlockRtInfoMapper {
 
     int deleteByPrimaryKey(Long id);
@@ -22,4 +29,5 @@ public interface StockBlockRtInfoMapper {
 
     int updateByPrimaryKey(StockBlockRtInfo record);
 
+    List<StockBlockResponseVo> getStockBlockRtInfoAllLimit(@Param("timePoint") Date timePoint);
 }

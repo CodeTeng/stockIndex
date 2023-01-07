@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lt.stock.mapper.SysPermissionMapper">
 
-    <resultMap id="BaseResultMap" type="com.lt.stock.pojo.SysPermission">
+    <resultMap id="BaseResultMap" type="com.lt.stock.pojo.entity.SysPermission">
             <id property="id" column="id" jdbcType="VARCHAR"/>
             <result property="code" column="code" jdbcType="VARCHAR"/>
             <result property="title" column="title" jdbcType="VARCHAR"/>
@@ -41,7 +41,7 @@
         delete from sys_permission
         where  id = #{id,jdbcType=VARCHAR} 
     </delete>
-    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.lt.stock.pojo.SysPermission" useGeneratedKeys="true">
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.lt.stock.pojo.entity.SysPermission" useGeneratedKeys="true">
         insert into sys_permission
         ( id,code,title
         ,icon,perms,url
@@ -56,7 +56,7 @@
         ,#{createTime,jdbcType=TIMESTAMP},#{updateTime,jdbcType=TIMESTAMP},#{deleted,jdbcType=TINYINT}
         )
     </insert>
-    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.lt.stock.pojo.SysPermission" useGeneratedKeys="true">
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.lt.stock.pojo.entity.SysPermission" useGeneratedKeys="true">
         insert into sys_permission
         <trim prefix="(" suffix=")" suffixOverrides=",">
                 <if test="id != null">id,</if>
@@ -93,7 +93,7 @@
                 <if test="deleted != null">#{deleted,jdbcType=TINYINT},</if>
         </trim>
     </insert>
-    <update id="updateByPrimaryKeySelective" parameterType="com.lt.stock.pojo.SysPermission">
+    <update id="updateByPrimaryKeySelective" parameterType="com.lt.stock.pojo.entity.SysPermission">
         update sys_permission
         <set>
                 <if test="code != null">
@@ -141,7 +141,7 @@
         </set>
         where   id = #{id,jdbcType=VARCHAR} 
     </update>
-    <update id="updateByPrimaryKey" parameterType="com.lt.stock.pojo.SysPermission">
+    <update id="updateByPrimaryKey" parameterType="com.lt.stock.pojo.entity.SysPermission">
         update sys_permission
         set 
             code =  #{code,jdbcType=VARCHAR},

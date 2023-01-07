@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lt.stock.mapper.SysRolePermissionMapper">
 
-    <resultMap id="BaseResultMap" type="com.lt.stock.pojo.SysRolePermission">
+    <resultMap id="BaseResultMap" type="com.lt.stock.pojo.entity.SysRolePermission">
             <id property="id" column="id" jdbcType="VARCHAR"/>
             <result property="roleId" column="role_id" jdbcType="VARCHAR"/>
             <result property="permissionId" column="permission_id" jdbcType="VARCHAR"/>
@@ -27,14 +27,14 @@
         delete from sys_role_permission
         where  id = #{id,jdbcType=VARCHAR} 
     </delete>
-    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.lt.stock.pojo.SysRolePermission" useGeneratedKeys="true">
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.lt.stock.pojo.entity.SysRolePermission" useGeneratedKeys="true">
         insert into sys_role_permission
         ( id,role_id,permission_id
         ,create_time)
         values (#{id,jdbcType=VARCHAR},#{roleId,jdbcType=VARCHAR},#{permissionId,jdbcType=VARCHAR}
         ,#{createTime,jdbcType=TIMESTAMP})
     </insert>
-    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.lt.stock.pojo.SysRolePermission" useGeneratedKeys="true">
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.lt.stock.pojo.entity.SysRolePermission" useGeneratedKeys="true">
         insert into sys_role_permission
         <trim prefix="(" suffix=")" suffixOverrides=",">
                 <if test="id != null">id,</if>
@@ -49,7 +49,7 @@
                 <if test="createTime != null">#{createTime,jdbcType=TIMESTAMP},</if>
         </trim>
     </insert>
-    <update id="updateByPrimaryKeySelective" parameterType="com.lt.stock.pojo.SysRolePermission">
+    <update id="updateByPrimaryKeySelective" parameterType="com.lt.stock.pojo.entity.SysRolePermission">
         update sys_role_permission
         <set>
                 <if test="roleId != null">
@@ -64,7 +64,7 @@
         </set>
         where   id = #{id,jdbcType=VARCHAR} 
     </update>
-    <update id="updateByPrimaryKey" parameterType="com.lt.stock.pojo.SysRolePermission">
+    <update id="updateByPrimaryKey" parameterType="com.lt.stock.pojo.entity.SysRolePermission">
         update sys_role_permission
         set 
             role_id =  #{roleId,jdbcType=VARCHAR},

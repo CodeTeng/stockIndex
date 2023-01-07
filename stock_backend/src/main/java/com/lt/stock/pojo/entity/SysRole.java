@@ -1,4 +1,4 @@
-package com.lt.stock.pojo;
+package com.lt.stock.pojo.entity;
 
 import java.io.Serializable;
 import java.util.Date;

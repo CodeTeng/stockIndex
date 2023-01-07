@@ -1,13 +1,20 @@
 package com.lt.stock.mapper;
 
-import com.lt.stock.pojo.StockMarketIndexInfo;
+import com.lt.stock.pojo.entity.StockMarketIndexInfo;
+import com.lt.stock.pojo.vo.InnerMarketResponseVo;
+import org.apache.ibatis.annotations.Param;
+import org.springframework.stereotype.Repository;
+
+import java.util.Date;
+import java.util.List;
 
 /**
-* @author teng
-* @description 针对表【stock_market_index_info(股票大盘数据详情表)】的数据库操作Mapper
-* @createDate 2023-01-06 18:23:05
-* @Entity com.lt.stock.pojo.StockMarketIndexInfo
-*/
+ * @author teng
+ * @description 针对表【stock_market_index_info(股票大盘数据详情表)】的数据库操作Mapper
+ * @createDate 2023-01-06 18:23:05
+ * @Entity com.lt.stock.pojo.entity.StockMarketIndexInfo
+ */
+@Repository
 public interface StockMarketIndexInfoMapper {
 
     int deleteByPrimaryKey(Long id);
@@ -22,4 +29,12 @@ public interface StockMarketIndexInfoMapper {
 
     int updateByPrimaryKey(StockMarketIndexInfo record);
 
+    /**
+     * 根据大盘 id 和时间查询大盘信息
+     *
+     * @param marketIds 大盘id集合
+     * @param timePoint 时间点
+     * @return 大盘信息
+     */
+    List<InnerMarketResponseVo> getMarketInfo(@Param("marketIds") List<String> marketIds, @Param("timePoint") Date timePoint);
 }

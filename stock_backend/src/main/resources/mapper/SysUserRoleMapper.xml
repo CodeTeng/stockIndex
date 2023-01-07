@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lt.stock.mapper.SysUserRoleMapper">
 
-    <resultMap id="BaseResultMap" type="com.lt.stock.pojo.SysUserRole">
+    <resultMap id="BaseResultMap" type="com.lt.stock.pojo.entity.SysUserRole">
             <id property="id" column="id" jdbcType="VARCHAR"/>
             <result property="userId" column="user_id" jdbcType="VARCHAR"/>
             <result property="roleId" column="role_id" jdbcType="VARCHAR"/>
@@ -27,14 +27,14 @@
         delete from sys_user_role
         where  id = #{id,jdbcType=VARCHAR} 
     </delete>
-    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.lt.stock.pojo.SysUserRole" useGeneratedKeys="true">
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.lt.stock.pojo.entity.SysUserRole" useGeneratedKeys="true">
         insert into sys_user_role
         ( id,user_id,role_id
         ,create_time)
         values (#{id,jdbcType=VARCHAR},#{userId,jdbcType=VARCHAR},#{roleId,jdbcType=VARCHAR}
         ,#{createTime,jdbcType=TIMESTAMP})
     </insert>
-    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.lt.stock.pojo.SysUserRole" useGeneratedKeys="true">
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.lt.stock.pojo.entity.SysUserRole" useGeneratedKeys="true">
         insert into sys_user_role
         <trim prefix="(" suffix=")" suffixOverrides=",">
                 <if test="id != null">id,</if>
@@ -49,7 +49,7 @@
                 <if test="createTime != null">#{createTime,jdbcType=TIMESTAMP},</if>
         </trim>
     </insert>
-    <update id="updateByPrimaryKeySelective" parameterType="com.lt.stock.pojo.SysUserRole">
+    <update id="updateByPrimaryKeySelective" parameterType="com.lt.stock.pojo.entity.SysUserRole">
         update sys_user_role
         <set>
                 <if test="userId != null">
@@ -64,7 +64,7 @@
         </set>
         where   id = #{id,jdbcType=VARCHAR} 
     </update>
-    <update id="updateByPrimaryKey" parameterType="com.lt.stock.pojo.SysUserRole">
+    <update id="updateByPrimaryKey" parameterType="com.lt.stock.pojo.entity.SysUserRole">
         update sys_user_role
         set 
             user_id =  #{userId,jdbcType=VARCHAR},

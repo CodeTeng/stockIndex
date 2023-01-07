@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.lt.stock.mapper.StockRtInfoMapper">
 
-    <resultMap id="BaseResultMap" type="com.lt.stock.pojo.StockRtInfo">
+    <resultMap id="BaseResultMap" type="com.lt.stock.pojo.entity.StockRtInfo">
             <id property="id" column="id" jdbcType="VARCHAR"/>
             <result property="stockCode" column="stock_code" jdbcType="CHAR"/>
             <result property="curTime" column="cur_time" jdbcType="TIMESTAMP"/>
@@ -36,7 +36,7 @@
         delete from stock_rt_info
         where  id = #{id,jdbcType=VARCHAR} 
     </delete>
-    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.lt.stock.pojo.StockRtInfo" useGeneratedKeys="true">
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.lt.stock.pojo.entity.StockRtInfo" useGeneratedKeys="true">
         insert into stock_rt_info
         ( id,stock_code,cur_time
         ,stock_name,open_price,pre_close_price
@@ -47,7 +47,7 @@
         ,#{curPrice,jdbcType=DECIMAL},#{maxPrice,jdbcType=DECIMAL},#{minPrice,jdbcType=DECIMAL}
         ,#{tradeAmount,jdbcType=BIGINT},#{tradeVolume,jdbcType=DECIMAL})
     </insert>
-    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.lt.stock.pojo.StockRtInfo" useGeneratedKeys="true">
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.lt.stock.pojo.entity.StockRtInfo" useGeneratedKeys="true">
         insert into stock_rt_info
         <trim prefix="(" suffix=")" suffixOverrides=",">
                 <if test="id != null">id,</if>
@@ -76,7 +76,7 @@
                 <if test="tradeVolume != null">#{tradeVolume,jdbcType=DECIMAL},</if>
         </trim>
     </insert>
-    <update id="updateByPrimaryKeySelective" parameterType="com.lt.stock.pojo.StockRtInfo">
+    <update id="updateByPrimaryKeySelective" parameterType="com.lt.stock.pojo.entity.StockRtInfo">
         update stock_rt_info
         <set>
                 <if test="stockCode != null">
@@ -112,7 +112,7 @@
         </set>
         where   id = #{id,jdbcType=VARCHAR} 
     </update>
-    <update id="updateByPrimaryKey" parameterType="com.lt.stock.pojo.StockRtInfo">
+    <update id="updateByPrimaryKey" parameterType="com.lt.stock.pojo.entity.StockRtInfo">
         update stock_rt_info
         set 
             stock_code =  #{stockCode,jdbcType=CHAR},
