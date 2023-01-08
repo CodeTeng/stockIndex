@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author teng
@@ -37,4 +38,13 @@ public interface StockMarketIndexInfoMapper {
      * @return 大盘信息
      */
     List<InnerMarketResponseVo> getMarketInfo(@Param("marketIds") List<String> marketIds, @Param("timePoint") Date timePoint);
+
+    /**
+     * 根据时间范围和指定的大盘id统计每分钟的交易量
+     *
+     * @param marketIds 股票大盘的编码code集合
+     * @param startTime 开始时间
+     * @param endTime   结束时间
+     */
+    List<Map> getStockTradeAccountCount(@Param("marketIds") List<String> marketIds, @Param("startTime") Date startTime, @Param("endTime") Date endTime);
 }

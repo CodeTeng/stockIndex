@@ -136,4 +136,17 @@
         on tmp.code = smlp.market_code and
         date_format(smlp.cur_date, '%Y%m%d') = date_format(#{timePoint}, '%Y%m%d');
     </select>
+
+    <select id="getStockTradeAccountCount" resultType="java.util.Map">
+        select date_format(smii.cur_time, '%Y%m%d%H%i') as time,
+        sum(smii.trade_volume) as count
+        from stock_market_index_info as smii
+        where smii.mark_Id in
+        <foreach collection="marketIds" item="marketId" open="(" close=")" separator=",">
+            #{marketId}
+        </foreach>
+        and smii.cur_time between #{startTime} and #{endTime}
+        group by smii.cur_time
+        order by time;
+    </select>
 </mapper>

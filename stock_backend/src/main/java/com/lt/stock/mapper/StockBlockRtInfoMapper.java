@@ -2,7 +2,9 @@ package com.lt.stock.mapper;
 
 import com.lt.stock.pojo.entity.StockBlockRtInfo;
 import com.lt.stock.pojo.vo.StockBlockResponseVo;
+import com.lt.stock.pojo.vo.StockMinuteResponseVo;
 import org.apache.ibatis.annotations.Param;
+import org.joda.time.DateTime;
 import org.springframework.stereotype.Repository;
 
 import java.util.Date;
@@ -30,4 +32,13 @@ public interface StockBlockRtInfoMapper {
     int updateByPrimaryKey(StockBlockRtInfo record);
 
     List<StockBlockResponseVo> getStockBlockRtInfoAllLimit(@Param("timePoint") Date timePoint);
+
+    /**
+     * 统计指定股票T日每分钟的交易数据
+     *
+     * @param code      股票编码
+     * @param startTime 开始时间
+     * @param endTime   结束时间
+     */
+    List<StockMinuteResponseVo> getStockMinute(@Param("code") String code, @Param("startTime") Date startTime, @Param("endTime") Date endTime);
 }

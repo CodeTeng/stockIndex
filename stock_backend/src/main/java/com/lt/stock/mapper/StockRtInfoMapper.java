@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author teng
@@ -32,4 +33,13 @@ public interface StockRtInfoMapper {
     List<StockUpDownResponseVo> getStockUpDownAllLimit(@Param("curTime") Date curTime);
 
     List<StockUpDownResponseVo> getStockUpDownAll();
+
+    /**
+     * 沪深两市涨跌停分时行情数据查询，查询T日每分钟的涨跌停数据（T：当前股票交易日）
+     *
+     * @param startTime 开始时间
+     * @param endTime   结束时间
+     * @param flag      标志 1-涨停 2-跌停
+     */
+    List<Map> getStockUpDownCount(@Param("startTime") Date startTime, @Param("endTime") Date endTime, @Param("flag") int flag);
 }

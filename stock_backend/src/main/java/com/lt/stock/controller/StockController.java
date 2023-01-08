@@ -5,8 +5,10 @@ import com.lt.stock.common.Response;
 import com.lt.stock.common.enums.ResponseCode;
 import com.lt.stock.pojo.vo.InnerMarketResponseVo;
 import com.lt.stock.pojo.vo.StockBlockResponseVo;
+import com.lt.stock.pojo.vo.StockMinuteResponseVo;
 import com.lt.stock.pojo.vo.StockUpDownResponseVo;
 import com.lt.stock.service.StockService;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @description:
@@ -79,5 +82,41 @@ public class StockController {
     @GetMapping("/stock/export")
     public void stockExport(HttpServletResponse response, Integer page, Integer pageSize) {
         stockService.stockExport(response, page, pageSize);
+    }
+
+    /**
+     * 沪深两市涨跌停分时行情数据查询，查询T日每分钟的涨跌停数据（T：当前股票交易日）
+     *
+     * @return map:{upList:涨停数据统计，downList:跌停数据统计}
+     */
+    @GetMapping("/stock/updown/count")
+    public Response<Map> getStockUpDownCount() {
+        return stockService.getStockUpDownCount();
+    }
+
+    /**
+     * 统计国内A股大盘T日和T-1日成交量对比功能（成交量为沪市和深市成交量之和）
+     *
+     * @return map:{"volList":
+     * [{"count": 3926392,"time": "202112310930"},......],
+     * "yesVolList":
+     * [{"count": 3926392,"time": "202112310930"},......]}
+     */
+    @GetMapping("/stock/tradevol")
+    public Response<Map> getStockTradeAccountCount() {
+        return stockService.getStockTradeAccountCount();
+    }
+
+    /**
+     * 统计指定股票T日每分钟的交易数据
+     *
+     * @param code 股票编码
+     */
+    @GetMapping("/stock/screen/time-sharing")
+    public Response<List<StockMinuteResponseVo>> getStockMinute(String code) {
+        if (StringUtils.isBlank(code)) {
+            return Response.error(ResponseCode.DATA_ERROR.getMessage());
+        }
+        return stockService.getStockMinute(code);
     }
 }

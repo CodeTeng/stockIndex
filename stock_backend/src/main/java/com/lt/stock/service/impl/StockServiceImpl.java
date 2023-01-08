@@ -5,15 +5,13 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.lt.stock.common.PageResult;
 import com.lt.stock.common.Response;
+import com.lt.stock.common.enums.Number;
 import com.lt.stock.common.enums.ResponseCode;
 import com.lt.stock.mapper.StockBlockRtInfoMapper;
 import com.lt.stock.mapper.StockMarketIndexInfoMapper;
 import com.lt.stock.mapper.StockRtInfoMapper;
 import com.lt.stock.pojo.StockInfoConfig;
-import com.lt.stock.pojo.vo.InnerMarketResponseVo;
-import com.lt.stock.pojo.vo.StockBlockResponseVo;
-import com.lt.stock.pojo.vo.StockExcelResponseVo;
-import com.lt.stock.pojo.vo.StockUpDownResponseVo;
+import com.lt.stock.pojo.vo.*;
 import com.lt.stock.service.StockService;
 import com.lt.stock.utils.DateTimeUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -26,10 +24,8 @@ import org.springframework.util.CollectionUtils;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -72,11 +68,11 @@ public class StockServiceImpl implements StockService {
     @Override
     public Response<List<StockBlockResponseVo>> getStockBlockRtInfoAllLimit() {
         // 1. 获取最近最新的股票有效交易日
+        Date lastDate = DateTimeUtil.getLastDate4Stock(DateTime.now()).toDate();
         // TODO mock 数据，后续大盘数据实时拉去，将该行注释掉 传入的日期秒必须为0
-        String mockDate = "20211221143000";
-        Date date = DateTime.parse(mockDate, DateTimeFormat.forPattern("yyyyMMddHHmmss")).toDate();
+        lastDate = DateTime.parse("2021-12-21 14:30:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
         // 2. 调用 mapper 返回数据
-        List<StockBlockResponseVo> list = stockBlockRtInfoMapper.getStockBlockRtInfoAllLimit(date);
+        List<StockBlockResponseVo> list = stockBlockRtInfoMapper.getStockBlockRtInfoAllLimit(lastDate);
         if (CollectionUtils.isEmpty(list)) {
             return Response.error(ResponseCode.NO_RESPONSE_DATA.getMessage());
         }
@@ -103,6 +99,9 @@ public class StockServiceImpl implements StockService {
         PageHelper.startPage(page, pageSize);
         // 2. 通过 mapper 查询数据
         List<StockUpDownResponseVo> list = stockRtInfoMapper.getStockUpDownAll();
+        if (CollectionUtils.isEmpty(list)) {
+            return Response.error(ResponseCode.NO_RESPONSE_DATA.getMessage());
+        }
         // 3. 封装到分页对象中
         PageInfo<StockUpDownResponseVo> pageInfo = new PageInfo<>(list);
         PageResult<StockUpDownResponseVo> pageResult = new PageResult<>(pageInfo);
@@ -132,5 +131,90 @@ public class StockServiceImpl implements StockService {
             log.info("股票excel数据导出异常，当前页：{}，每页大小：{}，异常信息：{}", page, pageSize, e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public Response<Map> getStockUpDownCount() {
+        // 1. 获取股票最近的有效交易日期,精确到秒
+        DateTime curDateTime = DateTimeUtil.getLastDate4Stock(DateTime.now());
+        // 2. 获取开盘时间和收盘时间
+        Date openTime = DateTimeUtil.getOpenDate(curDateTime).toDate();
+        Date closeTime = DateTimeUtil.getCloseDate(curDateTime).toDate();
+        // TODO mock 数据
+        openTime = DateTime.parse("2021-12-19 09:30:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
+        closeTime = DateTime.parse("2021-12-19 15:00:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
+        // 3. 查询涨停和跌停的统计数
+        List<Map> upList = stockRtInfoMapper.getStockUpDownCount(openTime, closeTime, Number.One.getNumber());
+        if (CollectionUtils.isEmpty(upList)) {
+            upList = new ArrayList<>();
+        }
+        List<Map> downList = stockRtInfoMapper.getStockUpDownCount(openTime, closeTime, Number.Two.getNumber());
+        if (CollectionUtils.isEmpty(downList)) {
+            downList = new ArrayList<>();
+        }
+        // 4. 封装 Map
+        Map<String, List> map = new HashMap<>(2);
+        map.put("upList", upList);
+        map.put("downList", downList);
+        // 5. 返回数据
+        return Response.ok(map);
+    }
+
+    @Override
+    public Response<Map> getStockTradeAccountCount() {
+        // 1. 获取 T 日和 T-1 日的开始时间和结束时间
+        // 1.1 获取最近股票有效交易时间点 --- T 日的时间范围
+        DateTime lastDateTime = DateTimeUtil.getLastDate4Stock(DateTime.now());
+        DateTime openDateTime = DateTimeUtil.getOpenDate(lastDateTime);
+        Date startTime4T = openDateTime.toDate();
+        Date endTime4T = lastDateTime.toDate();
+        // TODO mock 数据
+        startTime4T = DateTime.parse("2022-01-03 09:30:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
+        endTime4T = DateTime.parse("2022-01-03 14:40:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
+        // 1.2 获取 T-1 日的时间范围
+        DateTime preLastDateTime = DateTimeUtil.getPreviousTradingDay(lastDateTime);
+        DateTime preOpenDateTime = DateTimeUtil.getPreviousTradingDay(openDateTime);
+        Date startTime4PreT = preOpenDateTime.toDate();
+        Date endTime4PreT = preLastDateTime.toDate();
+        // TODO mock 数据
+        startTime4PreT = DateTime.parse("2022-01-02 09:30:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
+        endTime4PreT = DateTime.parse("2022-01-02 14:40:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
+        // 2. 获取上证和深证的大盘id
+        List<String> marketIds = stockInfoConfig.getInner();
+        // 3. 获取 T 日和 T-1 日的交易量数据
+        // 3.1 查询 T 日大盘交易统计数据
+        List<Map> volList = stockMarketIndexInfoMapper.getStockTradeAccountCount(marketIds, startTime4T, endTime4T);
+        if (CollectionUtils.isEmpty(volList)) {
+            volList = new ArrayList<>();
+        }
+        // 3.2 查询 T-1 日大盘交易统计数据
+        List<Map> yesVolList = stockMarketIndexInfoMapper.getStockTradeAccountCount(marketIds, startTime4PreT, endTime4PreT);
+        if (CollectionUtils.isEmpty(yesVolList)) {
+            yesVolList = new ArrayList<>();
+        }
+        // 4. 封装数据
+        Map<String, List> map = new HashMap<>(2);
+        map.put("volList", volList);
+        map.put("yesVolList", yesVolList);
+        // 5. 返回
+        return Response.ok(map);
+    }
+
+    @Override
+    public Response<List<StockMinuteResponseVo>> getStockMinute(String code) {
+        // 1. 获取 T 日的开始时间和结束时间
+        // 1.1 获取最近的有效交易时间
+        DateTime lastDateTime = DateTimeUtil.getLastDate4Stock(DateTime.now());
+        DateTime openDateTime = DateTimeUtil.getOpenDate(lastDateTime);
+        // TODO mock 数据
+        Date startTime = DateTime.parse("2021-12-30 09:30:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
+        Date endTime = DateTime.parse("2021-12-30 15:00:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
+        // 2. 查询数据
+        List<StockMinuteResponseVo> list = stockBlockRtInfoMapper.getStockMinute(code, startTime, endTime);
+        if (CollectionUtils.isEmpty(list)) {
+            list = new ArrayList<>();
+        }
+        // 3. 返回
+        return Response.ok(list);
     }
 }

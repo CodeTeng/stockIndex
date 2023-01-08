@@ -123,8 +123,25 @@
                sbri.trade_volume                    as tradeVol,
                sbri.updown_rate                     as updownRate
         from stock_block_rt_info as sbri
-        where sbri.cur_time = date_format(#{timePoint}, '%Y-%m-%d %H:%i:%S')
+        where sbri.cur_time = #{timePoint}
         order by sbri.trade_volume desc
         limit 10;
+    </select>
+
+    <select id="getStockMinute" resultType="com.lt.stock.pojo.vo.StockMinuteResponseVo">
+        # 统计指定股票 T 日每分钟的交易数据
+        select date_format(sri.cur_time, '%Y%m%d%H%i') as date,
+               sri.trade_amount                        as tradeAmt,
+               sri.stock_code                          as code,
+               sri.min_price                           as lowPrice,
+               sri.pre_close_price                     as preClosePrice,
+               sri.stock_name                          as name,
+               sri.max_price                           as highPrice,
+               sri.open_price                          as openPrice,
+               sri.trade_volume                        as tradeVol,
+               sri.cur_price                           as tradePrice
+        from stock_rt_info sri
+        where sri.cur_time between #{startTime} and #{endTime}
+          and sri.stock_code = #{code};
     </select>
 </mapper>
