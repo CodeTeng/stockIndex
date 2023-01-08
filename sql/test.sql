@@ -89,3 +89,59 @@ from stock_rt_info as sri
 where sri.cur_time = '2021-12-27 09:47:00'
 order by upDown desc
 limit 10;
+
+select sri.cur_time,
+       (sri.cur_price - sri.pre_close_price) / sri.pre_close_price as increase
+from stock_rt_info sri
+where date_format(sri.cur_time, '%Y%m%d%H%i') = date_format('2021-12-19 09:57:00', '%Y%m%d%H%i')
+having increase >= 0.1;
+
+select sri.cur_time,
+       (sri.cur_price - sri.pre_close_price) / sri.pre_close_price as updown
+from stock_rt_info sri
+where sri.cur_time between '2021-12-19 09:30:00' and '2021-12-19 15:00:00'
+having updown >= 0.1;
+
+select date_format(tmp.cur_time, '%Y%m%d%H%i') as time,
+       count(*)                                as count
+from (select sri.cur_time,
+             (sri.cur_price - sri.pre_close_price) / sri.pre_close_price as updown
+      from stock_rt_info sri
+      where sri.cur_time between '2021-12-19 09:30:00' and '2021-12-19 15:00:00'
+      having updown >= 0.1) as tmp
+group by tmp.cur_time
+order by tmp.cur_time asc;
+
+# 统计国内A股大盘T日和T-1日成交量对比功能（成交量为沪市和深市成交量之和）
+# 统计 T 日 如果对索引字段使用了函数 会导致索引失效
+# 数据库的核心工作：1、存储数据 2、索引 不擅长复杂逻辑处理  我们应该把复杂的逻辑处理放在 service 层里面去处理
+select date_format(smii.cur_time, '%Y%m%d%H%i') as time,
+       sum(smii.trade_volume)                   as count
+from stock_market_index_info as smii
+where smii.mark_Id in ('s_sh000001', 's_sz399001')
+  and smii.cur_time between '2022-01-03 09:30:00' and '2022-01-03 14:40:00'
+group by smii.cur_time
+order by time;
+# 统计 T-1 日
+select date_format(smii.cur_time, '%Y%m%d%H%i') as time,
+       sum(smii.trade_volume)                   as count
+from stock_market_index_info as smii
+where smii.mark_Id in ('s_sh000001', 's_sz399001')
+  and smii.cur_time between '2022-01-02 09:30:00' and '2022-01-02 14:40:00'
+group by smii.cur_time
+order by time;
+
+# 统计指定股票 T 日每分钟的交易数据
+select date_format(sri.cur_time, '%Y%m%d%H%i') as date,
+       sri.trade_amount                        as tradeAmt,
+       sri.stock_code                          as code,
+       sri.min_price                           as lowPrice,
+       sri.pre_close_price                     as preClosePrice,
+       sri.stock_name                          as name,
+       sri.max_price                           as highPrice,
+       sri.open_price                          as openPrice,
+       sri.trade_volume                        as tradeVol,
+       sri.cur_price                           as tradePrice
+from stock_rt_info sri
+where sri.cur_time between '2021-12-30 09:30:00' and '2021-12-30 15:00:00'
+  and sri.stock_code = '600000';
