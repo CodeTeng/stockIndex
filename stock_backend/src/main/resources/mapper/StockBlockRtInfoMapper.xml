@@ -70,6 +70,7 @@
             <if test="curTime != null">#{curTime,jdbcType=TIMESTAMP},</if>
         </trim>
     </insert>
+
     <update id="updateByPrimaryKeySelective" parameterType="com.lt.stock.pojo.entity.StockBlockRtInfo">
         update stock_block_rt_info
         <set>
@@ -144,4 +145,88 @@
         where sri.cur_time between #{startTime} and #{endTime}
           and sri.stock_code = #{code};
     </select>
+
+    <select id="getStockUpDown" resultType="java.util.Map">
+        <![CDATA[
+        select tmp2.title,
+               count(*) as count
+        from (select case
+                         when tmp.updown > 0.07 then '>%7'
+                         when tmp.updown > 0.05 and tmp.updown <= 0.07 then '5~7%'
+                         when tmp.updown > 0.03 and tmp.updown <= 0.05 then '3~5%'
+                         when tmp.updown > 0 and tmp.updown <= 0.03 then '0~3%'
+                         when tmp.updown > -0.03 and tmp.updown <= 0 then '-3~0%'
+                         when tmp.updown > -0.05 and tmp.updown <= -0.03 then '-5~-3%'
+                         when tmp.updown > -0.07 and tmp.updown <= -0.05 then '-7~-5%'
+                         else '<-7%'
+                         end as title
+              from (select (sri.cur_price - sri.pre_close_price) / sri.pre_close_price as updown
+                    from stock_rt_info as sri
+                    where sri.cur_time = #{date}) as tmp) as tmp2
+        group by tmp2.title
+        ]]>
+    </select>
+
+    <select id="getStockDay" resultType="com.lt.stock.pojo.vo.StockDayResponseVo">
+        select date_format(sri2.cur_time, '%Y%m%d') as date,
+               sri2.trade_amount                    as tradeAmt,
+               sri2.stock_code                      as code,
+               sri2.min_price                       as lowPrice,
+               sri2.stock_name                      as name,
+               sri2.max_price                       as highPrice,
+               sri2.cur_price                       as openPrice,
+               sri2.trade_volume                    as tradeVol,
+               sri2.cur_price                       as closePrice,
+               sri2.pre_close_price                 as preClosePrice
+        from stock_rt_info sri2
+        where sri2.stock_code = #{code}
+          and sri2.cur_time in (select max(sri.cur_time) as closeDate
+                                from stock_rt_info sri
+                                where sri.stock_code = #{code}
+                                  and sri.cur_time between #{startDate} and #{endDate}
+                                group by date_format(sri.cur_time, '%Y%m%d'))
+        order by sri2.cur_time;
+    </select>
+
+    <select id="getCloseDates" resultType="java.util.Date">
+        select max(sri.cur_time) as closeDate
+        from stock_rt_info as sri
+        where sri.stock_code = #{code}
+          and sri.cur_time between #{startDate} and #{endDate}
+        group by date_format(sri.cur_time, '%Y%m%d')
+    </select>
+
+    <select id="getStockDayByDates" resultType="com.lt.stock.pojo.vo.StockDayResponseVo">
+        select
+        date_format(sri2.cur_time,'%Y%m%d') as date,
+        sri2.trade_amount as tradeAmt,
+        sri2.stock_code as code,
+        sri2.min_price as lowPrice,
+        sri2.stock_name as name,
+        sri2.max_price as highPrice,
+        sri2.open_price as openPrice,
+        sri2.trade_volume as tradeVol,
+        sri2.cur_price as closePrice,
+        sri2.pre_close_price as preClosePrice
+        from stock_rt_info as sri2
+        where sri2.stock_code=#{code} and sri2.cur_time in
+        <foreach collection="dates" item="date" open="(" close=")" separator=",">
+            #{date}
+        </foreach>
+    </select>
+
+    <insert id="insertBatch">
+        insert into stock_block_rt_info
+        ( id,label,block_name
+        ,company_num,avg_price,updown_rate
+        ,trade_amount,trade_volume,cur_time
+        )
+        values
+        <foreach collection="list" item="bi" separator=",">
+            (#{bi.id,jdbcType=BIGINT},#{bi.label,jdbcType=VARCHAR},#{bi.blockName,jdbcType=VARCHAR}
+            ,#{bi.companyNum,jdbcType=INTEGER},#{bi.avgPrice,jdbcType=DECIMAL},#{bi.updownRate,jdbcType=DECIMAL}
+            ,#{bi.tradeAmount,jdbcType=BIGINT},#{bi.tradeVolume,jdbcType=DECIMAL},#{bi.curTime,jdbcType=TIMESTAMP}
+            )
+        </foreach>
+    </insert>
 </mapper>

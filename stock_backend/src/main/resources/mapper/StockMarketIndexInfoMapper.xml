@@ -71,6 +71,7 @@
             <if test="tradeVolume != null">#{tradeVolume,jdbcType=BIGINT},</if>
         </trim>
     </insert>
+
     <update id="updateByPrimaryKeySelective" parameterType="com.lt.stock.pojo.entity.StockMarketIndexInfo">
         update stock_market_index_info
         <set>
@@ -149,4 +150,15 @@
         group by smii.cur_time
         order by time;
     </select>
+
+    <insert id="insertBatch">
+        insert into stock_market_index_info
+        (id, mark_Id, cur_time, mark_name, cur_point, current_price, updown_rate, trade_account, trade_volume)
+        values
+        <foreach collection="infos" item="smii" separator=",">
+            (#{smii.id,jdbcType=BIGINT},#{smii.markId,jdbcType=CHAR},#{smii.curTime,jdbcType=TIMESTAMP}
+            ,#{smii.markName,jdbcType=VARCHAR},#{smii.curPoint,jdbcType=DECIMAL},#{smii.currentPrice,jdbcType=DECIMAL}
+            ,#{smii.updownRate,jdbcType=DECIMAL},#{smii.tradeAccount,jdbcType=BIGINT},#{smii.tradeVolume,jdbcType=BIGINT})
+        </foreach>
+    </insert>
 </mapper>

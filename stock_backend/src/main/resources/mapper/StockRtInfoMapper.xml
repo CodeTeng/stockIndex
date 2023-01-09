@@ -79,6 +79,7 @@
             <if test="tradeVolume != null">#{tradeVolume,jdbcType=DECIMAL},</if>
         </trim>
     </insert>
+
     <update id="updateByPrimaryKeySelective" parameterType="com.lt.stock.pojo.entity.StockRtInfo">
         update stock_rt_info
         <set>
@@ -183,4 +184,19 @@
         group by tmp.cur_time
         order by tmp.cur_time asc;
     </select>
+
+    <insert id="insertBatch">
+        insert into stock_rt_info
+        (id,stock_code,cur_time
+        ,stock_name,open_price,pre_close_price
+        ,cur_price,max_price,min_price
+        ,trade_amount,trade_volume)
+        values
+        <foreach collection="list" item="si" separator=",">
+            (#{si.id,jdbcType=BIGINT},#{si.stockCode,jdbcType=CHAR},#{si.curTime,jdbcType=TIMESTAMP}
+            ,#{si.stockName,jdbcType=VARCHAR},#{si.openPrice,jdbcType=DECIMAL},#{si.preClosePrice,jdbcType=DECIMAL}
+            ,#{si.curPrice,jdbcType=DECIMAL},#{si.maxPrice,jdbcType=DECIMAL},#{si.minPrice,jdbcType=DECIMAL}
+            ,#{si.tradeAmount,jdbcType=BIGINT},#{si.tradeVolume,jdbcType=DECIMAL})
+        </foreach>
+    </insert>
 </mapper>

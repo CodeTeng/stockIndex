@@ -2,10 +2,7 @@ package com.lt.stock.service;
 
 import com.lt.stock.common.PageResult;
 import com.lt.stock.common.Response;
-import com.lt.stock.pojo.vo.InnerMarketResponseVo;
-import com.lt.stock.pojo.vo.StockBlockResponseVo;
-import com.lt.stock.pojo.vo.StockMinuteResponseVo;
-import com.lt.stock.pojo.vo.StockUpDownResponseVo;
+import com.lt.stock.pojo.vo.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -72,4 +69,16 @@ public interface StockService {
      * @param code 股票编码
      */
     Response<List<StockMinuteResponseVo>> getStockMinute(String code);
+
+    /**
+     * 统计当前时间下（精确到分钟），股票在各个涨跌区间的数量
+     */
+    Response<Map> getStockUpDown();
+
+    /**
+     * 个股日K数据查询 ，可以根据时间区间查询数日的K线数据  默认查询历史20天的数据
+     *
+     * @param code 股票编码
+     */
+    Response<List<StockDayResponseVo>> getStockDay(String code);
 }

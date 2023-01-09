@@ -25,4 +25,9 @@ public interface StockBusinessMapper {
     int updateByPrimaryKeySelective(StockBusiness record);
 
     int updateByPrimaryKey(StockBusiness record);
+
+    /**
+     * 获取所有股票的code
+     */
+    List<String> getAllStockCode();
 }

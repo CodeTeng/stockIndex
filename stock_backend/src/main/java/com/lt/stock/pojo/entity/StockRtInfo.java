@@ -4,7 +4,10 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * 个股详情信息表
@@ -13,6 +16,9 @@ import lombok.Data;
  * @TableName stock_rt_info
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 public class StockRtInfo implements Serializable {
     /**
      * 主键字段（无业务意义）

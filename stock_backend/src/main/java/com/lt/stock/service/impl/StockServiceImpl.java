@@ -217,4 +217,60 @@ public class StockServiceImpl implements StockService {
         // 3. 返回
         return Response.ok(list);
     }
+
+    @Override
+    public Response<Map> getStockUpDown() {
+        // 1. 获取当前时间下最近的一个股票交易时间 精确到秒
+        DateTime lastDateTime = DateTimeUtil.getLastDate4Stock(DateTime.now());
+        Date date = lastDateTime.toDate();
+        // todo mock 数据
+        date = DateTime.parse("2022-01-06 09:55:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
+        // 2. 查询数据
+        List<Map> maps = stockBlockRtInfoMapper.getStockUpDown(date);
+        if (CollectionUtils.isEmpty(maps)) {
+            maps = new ArrayList<>();
+        }
+        // 2.1 获取股票涨幅区间
+        List<String> upDownRange = stockInfoConfig.getUpDownRange();
+        // 2.2 将 list 集合下的字符串映射成 Map 对象
+        List<Map> finalMaps = maps;
+        List<Map> orderMap = upDownRange.stream().map(key -> {
+            Optional<Map> titleMap = finalMaps.stream().filter(map -> key.equals(map.get("title"))).findFirst();
+            Map tmp = null;
+            if (titleMap.isPresent()) {
+                tmp = titleMap.get();
+            } else {
+                tmp = new HashMap(2);
+                tmp.put("title", key);
+                tmp.put("count", 0);
+            }
+            return tmp;
+        }).collect(Collectors.toList());
+        Map<String, Object> map = new HashMap<>(2);
+        map.put("time", lastDateTime.toString("yyyy-MM-dd HH:mm:ss"));
+        map.put("infos", orderMap);
+        // 3. 返回
+        return Response.ok(map);
+    }
+
+    @Override
+    public Response<List<StockDayResponseVo>> getStockDay(String code) {
+        // 1. 获取当前有效开盘时间
+        DateTime lastDateTime = DateTimeUtil.getLastDate4Stock(DateTime.now());
+        Date endDate = lastDateTime.toDate();
+        // 前推20天
+        Date startDate = lastDateTime.minusDays(20).toDate();
+        // todo mock 数据
+        startDate = DateTime.parse("2021-12-13 09:32:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
+        endDate = DateTime.parse("2022-01-02 09:56:00", DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")).toDate();
+        // 2. 查询 mapper 获取数据
+//        List<StockDayResponseVo> list = stockBlockRtInfoMapper.getStockDay(code, startDate, endDate);
+        // 改进 为后序分库分表准备
+        List<Date> closeDates = stockBlockRtInfoMapper.getCloseDates(code, startDate, endDate);
+        List<StockDayResponseVo> list = stockBlockRtInfoMapper.getStockDayByDates(code, closeDates);
+        if (CollectionUtils.isEmpty(list)) {
+            return Response.error(ResponseCode.NO_RESPONSE_DATA.getMessage());
+        }
+        return Response.ok(list);
+    }
 }

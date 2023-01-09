@@ -30,7 +30,8 @@
         from stock_business
         where sec_code = #{secCode,jdbcType=CHAR}
     </delete>
-    <insert id="insert" keyColumn="sec_code" keyProperty="secCode" parameterType="com.lt.stock.pojo.entity.StockBusiness"
+    <insert id="insert" keyColumn="sec_code" keyProperty="secCode"
+            parameterType="com.lt.stock.pojo.entity.StockBusiness"
             useGeneratedKeys="true">
         insert into stock_business
         ( sec_code, sec_name, sector_code
@@ -88,4 +89,9 @@
             update_time = #{updateTime,jdbcType=TIMESTAMP}
         where sec_code = #{secCode,jdbcType=CHAR}
     </update>
+
+    <select id="getAllStockCode" resultType="java.lang.String">
+        select sec_code
+        from stock_business;
+    </select>
 </mapper>

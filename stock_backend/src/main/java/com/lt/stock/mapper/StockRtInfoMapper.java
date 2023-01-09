@@ -42,4 +42,9 @@ public interface StockRtInfoMapper {
      * @param flag      标志 1-涨停 2-跌停
      */
     List<Map> getStockUpDownCount(@Param("startTime") Date startTime, @Param("endTime") Date endTime, @Param("flag") int flag);
+
+    /**
+     * 批量插入功能
+     */
+    int insertBatch(List<StockRtInfo> stockRtInfoList);
 }

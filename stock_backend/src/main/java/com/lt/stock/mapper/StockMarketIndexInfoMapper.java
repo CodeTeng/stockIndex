@@ -47,4 +47,11 @@ public interface StockMarketIndexInfoMapper {
      * @param endTime   结束时间
      */
     List<Map> getStockTradeAccountCount(@Param("marketIds") List<String> marketIds, @Param("startTime") Date startTime, @Param("endTime") Date endTime);
+
+    /**
+     * 批量插入股票大盘数据
+     *
+     * @param infos 股票数据
+     */
+    int insertBatch(@Param("infos") List<StockMarketIndexInfo> infos);
 }
