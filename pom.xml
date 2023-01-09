@@ -8,6 +8,7 @@
     <name>stock_parent</name>
     <modules>
         <module>stock_backend</module>
+        <module>stock_xxljob_admin</module>
     </modules>
     <packaging>pom</packaging>
     <description>stock_parent</description>
