@@ -80,6 +80,28 @@ pagehelper:
   params: pacount=countSql # POJO或者Map中发现了countSql属性，就会作为count参数使用
   returnPageInfo: check # always总是返回PageInfo类型,check检查返回类型是否为PageInfo,none返回Page
 
+# XXJOB参数配置
+xxl:
+  job:
+    accessToken:
+    admin:
+      addresses: http://127.0.0.1:8082/xxl-job-admin
+    executor:
+      appname: stock-xxl-job-executor
+      address:
+      ip:
+      port: 6666
+      logpath: /joblog
+      logretentiondays: 30
+
+# 定时任务线程池基础参数
+task:
+  pool:
+    corePoolSize: 5 # 核心线程数
+    maxPoolSize: 21 # 设置最大线程数
+    keepAliveSeconds: 300 # 设置线程活跃时间
+    queueCapacity: 100 # 设置队列容量
+
 # 配置股票相关的参数
 stock:
   inner: # A股

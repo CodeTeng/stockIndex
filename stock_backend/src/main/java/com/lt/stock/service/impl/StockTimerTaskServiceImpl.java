@@ -19,6 +19,7 @@ import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -63,6 +64,9 @@ public class StockTimerTaskServiceImpl implements StockTimerTaskService {
 
     @Autowired
     private StockBlockRtInfoMapper stockBlockRtInfoMapper;
+
+    @Autowired
+    private ThreadPoolTaskExecutor threadPoolTaskExecutor;
 
     @Override
     public void collectInnerMarketInfo() {
@@ -129,14 +133,17 @@ public class StockTimerTaskServiceImpl implements StockTimerTaskService {
         HttpEntity<Objects> entity = new HttpEntity<>(headers);
         // 2. 分片,每次查询20条数据
         Lists.partition(secCode, 20).forEach(list -> {
-            // 拼接 url
-            String marketUrl = stockInfoConfig.getMarketUrl();
-            String url = marketUrl + String.join(",", list);
-            // 获取响应数据
-            String result = restTemplate.postForObject(url, entity, String.class);
-            List<StockRtInfo> infos = parserStockInfoUtil.parser4StockOrMarketInfo(result, Number.Three.getNumber());
-            log.info("数据量：{}", infos.size());
-            stockRtInfoMapper.insertBatch(infos);
+            // 每个分片的数据开启一个线程异步执行任务
+            threadPoolTaskExecutor.execute(() -> {
+                // 拼接 url
+                String marketUrl = stockInfoConfig.getMarketUrl();
+                String url = marketUrl + String.join(",", list);
+                // 获取响应数据
+                String result = restTemplate.postForObject(url, entity, String.class);
+                List<StockRtInfo> infos = parserStockInfoUtil.parser4StockOrMarketInfo(result, Number.Three.getNumber());
+                log.info("数据量：{}", infos.size());
+                stockRtInfoMapper.insertBatch(infos);
+            });
         });
     }
 
@@ -147,6 +154,11 @@ public class StockTimerTaskServiceImpl implements StockTimerTaskService {
         List<StockBlockRtInfo> infos = parserStockInfoUtil.parse4StockBlock(resString);
         log.info("板块数据量：{}", infos.size());
         // 分片插入 20为一组
-        Lists.partition(infos, 20).forEach(list -> stockBlockRtInfoMapper.insertBatch(list));
+        Lists.partition(infos, 20).forEach(list -> {
+            // 每个分片的数据开启一个线程异步执行任务
+            threadPoolTaskExecutor.execute(() -> {
+                stockBlockRtInfoMapper.insertBatch(list);
+            });
+        });
     }
 }
