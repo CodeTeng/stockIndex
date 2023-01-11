@@ -1,7 +1,6 @@
 package com.lt.job.admin.core.conf;
 
 import com.lt.job.admin.core.scheduler.XxlJobScheduler;
-import com.itheima.job.admin.dao.*;
 import com.lt.job.admin.core.alarm.JobAlarmer;
 import com.lt.job.admin.dao.*;
 import org.springframework.beans.factory.DisposableBean;
