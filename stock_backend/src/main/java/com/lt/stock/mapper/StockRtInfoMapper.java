@@ -1,6 +1,7 @@
 package com.lt.stock.mapper;
 
 import com.lt.stock.pojo.entity.StockRtInfo;
+import com.lt.stock.pojo.vo.StockSearchResponseVo;
 import com.lt.stock.pojo.vo.StockUpDownResponseVo;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -47,4 +48,11 @@ public interface StockRtInfoMapper {
      * 批量插入功能
      */
     int insertBatch(List<StockRtInfo> stockRtInfoList);
+
+    /**
+     * 根据输入的个股代码，进行模糊查询，返回证券代码和证券名称
+     *
+     * @param code 只接受代码模糊查询，不支持文字查询
+     */
+    List<StockSearchResponseVo> getStockSearch(@Param("code") String code);
 }

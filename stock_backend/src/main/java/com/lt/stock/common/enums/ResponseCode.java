@@ -13,6 +13,7 @@ public enum ResponseCode {
     SUCCESS(1, "操作成功"),
     DATA_ERROR(0, "参数异常"),
     NO_RESPONSE_DATA(0, "无响应数据"),
+    NO_CHINESE_DATA(0, "只能输入相关代码"),
     SYSTEM_VERIFY_CODE_NOT_EMPTY(0, "验证码不能为空"),
     SYSTEM_VERIFY_CODE_ERROR(0, "验证码错误"),
     SYSTEM_VERIFY_CODE_EXPIRED(0, "验证码已过期"),
@@ -51,10 +52,10 @@ public enum ResponseCode {
     }
 
     public int getCode() {
-        return 0;
+        return this.code;
     }
 
     public String getMessage() {
-        return null;
+        return this.message;
     }
 }

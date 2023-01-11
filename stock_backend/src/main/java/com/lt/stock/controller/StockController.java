@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @description:
@@ -34,6 +36,14 @@ public class StockController {
     @GetMapping("/index/all")
     public Response<List<InnerMarketResponseVo>> getInnerIndexAll() {
         return stockService.getInnerIndexAll();
+    }
+
+    /**
+     * 外盘指数行情数据查询，根据时间和大盘点数降序排序取前4
+     */
+    @GetMapping("/external/index")
+    public Response<List<OuterMarketResponseVo>> getOuterMarketAll() {
+        return stockService.getOuterMarketAll();
     }
 
     /**
@@ -136,5 +146,23 @@ public class StockController {
             return Response.error(ResponseCode.DATA_ERROR.getMessage());
         }
         return stockService.getStockDay(code);
+    }
+
+    /**
+     * 根据输入的个股代码，进行模糊查询，返回证券代码和证券名称
+     *
+     * @param code 只接受代码模糊查询，不支持文字查询
+     */
+    @GetMapping("/search")
+    public Response<List<StockSearchResponseVo> > getStockSearch(String code) {
+        if (StringUtils.isBlank(code)) {
+            return Response.error(ResponseCode.DATA_ERROR.getMessage());
+        }
+        Pattern pattern = Pattern.compile("(\\d+)");
+        Matcher matcher = pattern.matcher(code);
+        if (!matcher.find()) {
+            return Response.error(ResponseCode.NO_CHINESE_DATA.getMessage());
+        }
+        return stockService.getStockSearch(code);
     }
 }

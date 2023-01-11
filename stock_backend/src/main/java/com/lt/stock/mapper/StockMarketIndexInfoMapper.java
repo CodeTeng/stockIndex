@@ -2,6 +2,7 @@ package com.lt.stock.mapper;
 
 import com.lt.stock.pojo.entity.StockMarketIndexInfo;
 import com.lt.stock.pojo.vo.InnerMarketResponseVo;
+import com.lt.stock.pojo.vo.OuterMarketResponseVo;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
@@ -54,4 +55,9 @@ public interface StockMarketIndexInfoMapper {
      * @param infos 股票数据
      */
     int insertBatch(@Param("infos") List<StockMarketIndexInfo> infos);
+
+    /**
+     * 外盘指数行情数据查询，根据时间和大盘点数降序排序取前4
+     */
+    List<OuterMarketResponseVo> getOuterMarket(@Param("marketIds") List<String> marketIds, @Param("timePoint") Date timePoint);
 }

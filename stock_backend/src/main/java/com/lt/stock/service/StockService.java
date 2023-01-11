@@ -81,4 +81,16 @@ public interface StockService {
      * @param code 股票编码
      */
     Response<List<StockDayResponseVo>> getStockDay(String code);
+
+    /**
+     * 外盘指数行情数据查询，根据时间和大盘点数降序排序取前4
+     */
+    Response<List<OuterMarketResponseVo>> getOuterMarketAll();
+
+    /**
+     * 根据输入的个股代码，进行模糊查询，返回证券代码和证券名称
+     *
+     * @param code 只接受代码模糊查询，不支持文字查询
+     */
+    Response<List<StockSearchResponseVo> > getStockSearch(String code);
 }

@@ -138,6 +138,21 @@
         date_format(smlp.cur_date, '%Y%m%d') = date_format(#{timePoint}, '%Y%m%d');
     </select>
 
+    <select id="getOuterMarket" resultType="com.lt.stock.pojo.vo.OuterMarketResponseVo">
+        select smii.mark_name as name,
+        date_format(smii.cur_time, '%Y%m%d') as curTime,
+        smii.updown_rate as updownRate,
+        smii.current_price as tradePrice,
+        smii.cur_point as curPoint
+        from stock_market_index_info as smii
+        where smii.cur_time = #{timePoint} and
+        smii.mark_Id in
+        <foreach collection="marketIds" item="id" open="(" close=")" separator=",">
+            #{id}
+        </foreach>
+        order by curTime desc, curPoint desc
+    </select>
+
     <select id="getStockTradeAccountCount" resultType="java.util.Map">
         select date_format(smii.cur_time, '%Y%m%d%H%i') as time,
         sum(smii.trade_volume) as count

@@ -199,4 +199,10 @@
             ,#{si.tradeAmount,jdbcType=BIGINT},#{si.tradeVolume,jdbcType=DECIMAL})
         </foreach>
     </insert>
+
+    <select id="getStockSearch" resultType="com.lt.stock.pojo.vo.StockSearchResponseVo">
+        select distinct sri.stock_code as code, sri.stock_name as name
+        from stock_rt_info sri
+        where sri.stock_code like concat('%', #{code}, '%')
+    </select>
 </mapper>

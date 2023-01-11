@@ -273,4 +273,32 @@ public class StockServiceImpl implements StockService {
         }
         return Response.ok(list);
     }
+
+    @Override
+    public Response<List<OuterMarketResponseVo>> getOuterMarketAll() {
+        // 1. 获取国外大盘的id集合
+        List<String> outerList = stockInfoConfig.getOuter();
+        // 2. 获取最近最新的股票有效交易日
+        Date date = DateTimeUtil.getLastDate4Stock(DateTime.now()).toDate();
+        // TODO mock 数据，后续大盘数据实时拉去，将该行注释掉 传入的日期秒必须为0
+        String mockDate = "20211231150000";
+        date = DateTime.parse(mockDate, DateTimeFormat.forPattern("yyyyMMddHHmmss")).toDate();
+        // 3. 调用mapper查询指定日期下对应的国内大盘数据
+        List<OuterMarketResponseVo> list = stockMarketIndexInfoMapper.getOuterMarket(outerList, date);
+        if (CollectionUtils.isEmpty(list)) {
+            list = new ArrayList<>();
+        }
+        return Response.ok(list);
+    }
+
+    @Override
+    public Response<List<StockSearchResponseVo>> getStockSearch(String code) {
+        List<StockSearchResponseVo> list = stockRtInfoMapper.getStockSearch(code);
+        if (CollectionUtils.isEmpty(list)) {
+            list = new ArrayList<>();
+        }
+        return Response.ok(list);
+    }
+
+
 }
