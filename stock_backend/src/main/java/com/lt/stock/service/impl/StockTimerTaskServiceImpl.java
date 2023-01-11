@@ -129,9 +129,9 @@ public class StockTimerTaskServiceImpl implements StockTimerTaskService {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Referer", "https://finance.sina.com.cn/stock/");
         headers.add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/72.0.3626.121 Safari/537.36");
-        // 2.2 组装请求对象
+        // 2 组装请求对象
         HttpEntity<Objects> entity = new HttpEntity<>(headers);
-        // 2. 分片,每次查询20条数据
+        // 3. 分片,每次查询20条数据
         Lists.partition(secCode, 20).forEach(list -> {
             // 每个分片的数据开启一个线程异步执行任务
             threadPoolTaskExecutor.execute(() -> {

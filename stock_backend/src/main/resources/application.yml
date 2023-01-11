@@ -94,6 +94,26 @@ xxl:
       logpath: /joblog
       logretentiondays: 30
 
+# 配置httpClient请求参数
+http:
+  pool:
+    # 整个线程池中最大连接数（整个线程池中最大连接数）
+    maxConnectionTotal: 50
+    # 路由到某台主机最大并发数
+    routeMaxCount: 20
+    # 连接空闲超时，清楚闲置的连接
+    connectionIdleTimeOut: 5000
+    # 重试次数，防止失败情况
+    retryCount: 2
+    # 客户端和服务器建立连接的超时时间
+    connectionTimeOut: 5000
+    # 客户端从服务器读取数据的超时时间
+    readTimeOut: 7000
+    # 从连接池中获取连接的超时时间
+    connectionRequestTimeOut: 5000
+    # 连接保持存活时间
+    defaultKeepAliveTimeMillis: 20000
+
 # 定时任务线程池基础参数
 task:
   pool:
