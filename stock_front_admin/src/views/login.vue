@@ -135,9 +135,9 @@ export default {
         console.log(data, "loginSuccess");
         this.loading = false;
         // true开启权限验证模式 ，false 不使用权限验证 ，默认不开启权限
-        data.isAuth = false;// TODO 开发时可设置为false，便于快速开发界面
-        data.permissions = permissoins;//TODO 后续动态从数据库获取
-        data.accessToken = "eyJhbGciOiJIUzI1NiJ9.eyJqd3Qt";//TODO 伪数据，后续动态从后台获取
+        data.isAuth = true;// TODO 开发时可设置为false，便于快速开发界面
+        // data.permissions = permissoins;//TODO 后续动态从数据库获取
+        // data.accessToken = "eyJhbGciOiJIUzI1NiJ9.eyJqd3Qt";//TODO 伪数据，后续动态从后台获取
         // debugger;
         this.success('登陆成功');
         //用户信息保存在本地storage

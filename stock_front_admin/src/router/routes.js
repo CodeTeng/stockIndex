@@ -60,67 +60,66 @@ const routes = [
 	},
 
 	//后续动态从数据库获取
-	{
-		path:'/org',
-		name:"org",
-		isMenu: true,
-		meta:{title:'组织管理', icon:'el-icon-s-tools'},
-		children:[
-			{
-				path:'/user',
-				name:'user',
-				meta:{title:'用户管理', icon:'el-icon-user-solid'},
-				component: () => import('@/views/components/user')
-			},
-			{
-				path:'/roles',
-				name:'roles',
-				meta:{title:'角色管理', icon:'el-icon-user'},
-				component: () => import('@/views/components/roles')
-			},
-			{
-				path:'/menus',
-				name:'menus',
-				meta:{title:'菜单列表', icon:'el-icon-menu'},
-				component: () => import('@/views/components/menus')
-			},
-		]
-	},
-	{
-		path:'/sys',
-		name:"sys",
-		isMenu: true,
-		meta:{title:'系统管理', icon:'el-icon-s-tools'},
-		children:[
-			{
-				path:'/logs',
-				name:'logs',
-				meta:{title:'日志管理', icon:'el-icon-s-marketing'},
-				component: () => import('@/views/components/logs')},
-			{
-				path:'/swagger',
-					name:'swagger',
-				meta:{title:'接口管理', icon:'el-icon-s-ticket'},
-				component: () => import('@/views/components/swagger')
-			},
-			{
-				path:'/druid/sql',
-					name:'sql',
-				meta:{title:'SQL监控', icon:'el-icon-s-data'},
-				component: () => import('@/views/components/sql')
-			},
-		]
-	},
-	{
-		path:'/jobAdmin',
-		name:'jobAdmin',
-		isMenu: true,
-		meta:{title:'定时任务管理', icon:'el-icon-s-tools'},
-		component: () => import(/* webpackChunkName: "login" */ '@/views/components/jobAdmin/index.vue')
-	},
+	// {
+	// 	path:'/org',
+	// 	name:"org",
+	// 	isMenu: true,
+	// 	meta:{title:'组织管理', icon:'el-icon-s-tools'},
+	// 	children:[
+	// 		{
+	// 			path:'/user',
+	// 			name:'user',
+	// 			meta:{title:'用户管理', icon:'el-icon-user-solid'},
+	// 			component: () => import('@/views/components/user')
+	// 		},
+	// 		{
+	// 			path:'/roles',
+	// 			name:'roles',
+	// 			meta:{title:'角色管理', icon:'el-icon-user'},
+	// 			component: () => import('@/views/components/roles')
+	// 		},
+	// 		{
+	// 			path:'/menus',
+	// 			name:'menus',
+	// 			meta:{title:'菜单列表', icon:'el-icon-menu'},
+	// 			component: () => import('@/views/components/menus')
+	// 		},
+	// 	]
+	// },
+	// {
+	// 	path:'/sys',
+	// 	name:"sys",
+	// 	isMenu: true,
+	// 	meta:{title:'系统管理', icon:'el-icon-s-tools'},
+	// 	children:[
+	// 		{
+	// 			path:'/logs',
+	// 			name:'logs',
+	// 			meta:{title:'日志管理', icon:'el-icon-s-marketing'},
+	// 			component: () => import('@/views/components/logs')},
+	// 		{
+	// 			path:'/swagger',
+	// 				name:'swagger',
+	// 			meta:{title:'接口管理', icon:'el-icon-s-ticket'},
+	// 			component: () => import('@/views/components/swagger')
+	// 		},
+	// 		{
+	// 			path:'/druid/sql',
+	// 				name:'sql',
+	// 			meta:{title:'SQL监控', icon:'el-icon-s-data'},
+	// 			component: () => import('@/views/components/sql')
+	// 		},
+	// 	]
+	// },
+	// {
+	// 	path:'/jobAdmin',
+	// 	name:'jobAdmin',
+	// 	isMenu: true,
+	// 	meta:{title:'定时任务管理', icon:'el-icon-s-tools'},
+	// 	component: () => import(/* webpackChunkName: "login" */ '@/views/components/jobAdmin/index.vue')
+	// },
 
 	//后续动态从数据库获取\\
-
 	{
 		path:'/401',
 		name:'401',

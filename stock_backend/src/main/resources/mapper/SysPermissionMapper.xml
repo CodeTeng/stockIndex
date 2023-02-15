@@ -160,4 +160,14 @@
             deleted =  #{deleted,jdbcType=TINYINT}
         where   id = #{id,jdbcType=VARCHAR} 
     </update>
+
+    <select id="getPermissionByUserId" resultType="com.lt.stock.pojo.entity.SysPermission">
+        SELECT distinct p.*
+        FROM sys_role_permission AS rp,
+             sys_user_role AS ur,
+             sys_permission AS p
+        WHERE ur.role_id = rp.role_id
+          AND rp.permission_id = p.id
+          AND ur.user_id = #{userId}
+    </select>
 </mapper>

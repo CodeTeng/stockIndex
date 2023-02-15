@@ -96,4 +96,12 @@
             deleted =  #{deleted,jdbcType=TINYINT}
         where   id = #{id,jdbcType=VARCHAR} 
     </update>
+
+    <select id="getRoleByUserId" resultType="com.lt.stock.pojo.entity.SysRole">
+        SELECT r.*
+        FROM sys_user_role AS ur,
+             sys_role AS r
+        WHERE ur.role_id = r.id
+          AND ur.user_id = #{userId}
+    </select>
 </mapper>

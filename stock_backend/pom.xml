@@ -19,6 +19,11 @@
     </properties>
 
     <dependencies>
+        <!--引入security-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
         <!-- 基本依赖 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -64,6 +69,10 @@
         <dependency>
             <groupId>joda-time</groupId>
             <artifactId>joda-time</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
         </dependency>
         <!--apache工具包-->
         <dependency>

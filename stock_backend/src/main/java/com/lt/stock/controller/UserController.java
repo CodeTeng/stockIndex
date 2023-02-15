@@ -5,6 +5,7 @@ import com.lt.stock.pojo.dto.LoginRequestDto;
 import com.lt.stock.pojo.vo.LoginResponseVo;
 import com.lt.stock.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -24,10 +25,10 @@ public class UserController {
     /**
      * 用户登录
      */
-    @PostMapping("/login")
-    public Response<LoginResponseVo> login(@RequestBody LoginRequestDto loginRequestDto) {
-        return userService.login(loginRequestDto);
-    }
+//    @PostMapping("/login")
+//    public Response<LoginResponseVo> login(@RequestBody LoginRequestDto loginRequestDto) {
+//        return userService.login(loginRequestDto);
+//    }
 
     /**
      * 生成验证码
@@ -37,5 +38,11 @@ public class UserController {
     @GetMapping("/captcha")
     public Response<Map<String, String>> generateCaptcha() {
         return userService.generateCaptcha();
+    }
+
+    @GetMapping("/user")
+    @PreAuthorize("hasAuthority('sys:user:update')")
+    public Response<String> getUser() {
+        return Response.ok("hello");
     }
 }

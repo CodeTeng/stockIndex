@@ -1,9 +1,14 @@
 package com.lt.stock.pojo.entity;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
+import com.lt.stock.pojo.vo.PermissionRespNodeVo;
 import lombok.Data;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 /**
  * 用户表
@@ -12,7 +17,7 @@ import lombok.Data;
  * @TableName sys_user
  */
 @Data
-public class SysUser implements Serializable {
+public class SysUser implements UserDetails {
     /**
      * 用户id
      */
@@ -89,4 +94,39 @@ public class SysUser implements Serializable {
     private Date updateTime;
 
     private static final long serialVersionUID = 1L;
+
+    /**
+     * 组装的是用户拥有的权限对应的前端的侧边菜单栏（不包含按钮）实现动态加载
+     */
+    private List<PermissionRespNodeVo> menus;
+
+    /**
+     * 前端按钮权限表示
+     */
+    private List<String> permissions;
+
+    /**
+     * 权限集合
+     */
+    private List<GrantedAuthority> authorities;
+
+    /**
+     * true:账号未过期
+     */
+    private boolean accountNonExpired = true;
+
+    /**
+     * true:账号未锁定
+     */
+    private boolean accountNonLocked = true;
+
+    /**
+     * true:密码未过期
+     */
+    private boolean credentialsNonExpired = true;
+
+    /**
+     * true:不禁用
+     */
+    private boolean enabled = true;
 }
